@@ -1,0 +1,29 @@
+---
+- name: Provisionando os balancers
+  hosts: balancers
+  become: yes
+  tasks:
+    - name: Inclui o arquivo de tarefas especificas da distribuicao
+      include_tasks: '{{ ansible_os_family|lower }}.yml'
+    - name: Garantindo que os pacotes haproxy e keepalived estejam instalados
+      package:
+        name: haproxy, keepalived
+        state: present
+    - name: Garantaindo o arquivo do keepalived
+      template:
+        src: files/keepalived.yml
+        dest: /etc/keepalived/keepalived.conf
+    - name: Garantindo o arquivo de configuracao do Haproxy
+      copy:
+        src: files/haproxy.cfg  
+        dest: /etc/haproxy/haproxy.cfg
+    - name: Garantindo que o servico do HAProxy esteja rodando
+      service:
+        name: haproxy
+        state: restarted
+        enabled: yes
+    - name: Garantindo que o keepalived esteja rodando
+      service:
+        name: keepalived
+        state: restarted
+        enabled: yes

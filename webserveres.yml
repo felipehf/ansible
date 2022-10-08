@@ -1,0 +1,46 @@
+---
+- name: Provisionando os webserveres
+  hosts: webservers
+  become: yes
+  tasks:
+  - name: Garante que o pacote do apache esteja instalado no CentOS
+    package:
+      name: 
+        - python3
+        - httpd
+      state: present
+    when: ansible_os_family|lower == 'redhat'
+
+  - name: Garante que o pacote do apache esteja instalado no Debian
+    package:
+      name:
+        - python3
+        - apache2
+      state: present
+    when: ansible_os_family|lower == 'debian'
+
+  - name: Garante que o serviço do apache esteja iniciado no CentOS
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+    when: ansible_os_family|lower == 'redhat'
+
+  - name: Garante que o serviço do apache esteja iniciado no Debian
+    service:
+      name: apache2
+      state: started
+      enabled: yes
+    when: ansible_os_family|lower == 'debian'
+  
+  - name: Garante que o site esteja presente em Red Hat
+    copy:
+      src: site/
+      dest: /var/www/html/
+    when: ansible_os_family|lower == 'redhat'
+
+  - name: Garante que o site esteja presente em Debian
+    copy:
+      src: site/
+      dest: /var/www/html/
+    when: ansible_os_family|lower == 'debian'

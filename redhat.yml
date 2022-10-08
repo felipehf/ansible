@@ -1,0 +1,22 @@
+- name: Garantindo que o firewall esteja inicializado
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: Garantindo que as portas 80 e 443 estejam abertas
+  firewalld:
+    service: "{{ item }}"
+    state: enabled
+    immediate: yes
+    permanent: yes
+  loop:
+  - http
+  - https
+
+- name: Garantindo que o protocolo VRRP esteja liberado
+  firewalld:
+    rich_rule: rule protocol value="vrrp" accept
+    state: enabled
+    immediate: yes
+    permanent: yes

@@ -3,6 +3,13 @@ Projeto: Balanceador de carga para uma aplicação que é executada no apache.
 
 Usarei o Ansible para configurar 4 servidores para criar uma estrutura de alta disponibilidade com HAProxy + Keepalived, que vai balancear o tráfego para 2 instâncias que vão rodar um simples html.
 
+## Servidores que serão usados:
+- 1 vm com Almalinux: balanceador1;
+- 1 vm com Debian: balanceador2;
+- 1 vm com Centos: webserver1;
+- 1 vm com Debian: webserver2;
+- 1 vm com Centos: servidor do Ansible;
+
 ## Arquivos
 - ansible.cfg : arquivo de configuração do ansible.
 - balancers.yml: playbook para provisionamento dos servidores que serão configurados com balanceadores de cargas.

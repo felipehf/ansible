@@ -1,0 +1,66 @@
+#Estudos Ansible
+- adicionar o epel para instalar o ansible
+dnf install epel-release -y
+
+- instalação:
+dnf install ansible
+
+- verificar informações sobre o pacote atual do ansible
+dnf info ansible 
+
+- instalar versão específica:
+dnf install ansible-2.9.15
+
+- verificar versão do ansible
+ansible --version
+
+- instalar os modulos que o python precisa para o k8s
+pip3 install openshift pyyaml kubernetes
+
+- instalar modulos para kubernets
+ansible-galaxy install geerlingguy.containerd
+
+- teste de conexao usando módulo ping
+ansible -i ../../inventory -m ping localhost
+
+- substituindo variaveis na linha de comando
+>criado a playbook check-dir.yml
+
+---
+- name: check if the directory exists
+  hosts: all
+  gather_facts: false
+  become: false
+  vars:
+    directory: "/tmp"
+
+  tasks:
+    - name: Check if the directory exists
+      stat:
+        path: "{{ directory }}"
+      register: dir_to_check
+
+    - name: Directory Found
+      debug:
+        msg: "Directory {{ directory }} present"
+      when: dir_to_check.stat.isdir is defined and dir_to_check.stat.isdir
+
+- comando para executa-lá: 
+>> sem passar variavel, usando a da playbook: ansible-playbook -i inventory playbooks/check-dir.yml -u felipe -k
+>> passando variavel na linha de comando: ansible-playbook -i inventory -e 'directory=/var' playbooks/check-dir.yml -u felipe -k
+
+- usando blockinfile para inserir bloco de texto em arquivos
+blockinfile.yml
+---
+- name: Blockinfile demo
+  hosts: all
+  become: true
+  tasks:
+
+  - name: Generate /etc/hosts file
+    blockinfile:
+      state: present
+      dest: /etc/hosts
+      content:  |
+        192.168.0.200 demo  demo.example.com
+> comando: ansible-playbook -i inventory playbooks/blockinfile.yml -u root -k

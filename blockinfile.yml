@@ -1,0 +1,12 @@
+---
+- name: Blockinfile demo
+  hosts: all
+  become: true
+  tasks:
+
+  - name: Generate /etc/hosts file
+    blockinfile:
+      state: present
+      dest: /etc/hosts
+      content:  |
+        192.168.0.200 demo  demo.example.com
